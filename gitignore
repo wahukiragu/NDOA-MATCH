@@ -1,0 +1,52 @@
+# ── OS files ──
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── Editor files ──
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# ── Environment & secrets ──
+.env
+.env.local
+.env.production
+*.env
+secrets.txt
+secrets.json
+config.local.js
+
+# ── Never commit these ──
+# Paystack secret key  (sk_live_... or sk_test_...)
+# Anthropic API key    (sk-ant-...)
+# Airtable API token   (pat...)
+# Zapier webhook URLs  (keep in Zapier, not in files)
+
+# ── Node (if you ever add a build step) ──
+node_modules/
+npm-debug.log*
+yarn-error.log*
+package-lock.json
+
+# ── Build output ──
+dist/
+build/
+.cache/
+
+# ── Logs ──
+*.log
+logs/
+
+# ── Test files ──
+test-results/
+coverage/

@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NdoaMatch — Know Who You're Called to Marry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #120A06;
+    --bg2:      #1E0E08;
+    --bg3:      #2A1509;
+    --border:   #3D1F10;
+    --border2:  #5C3020;
+    --text:     #F0E2CC;
+    --text2:    #B08060;
+    --text3:    #6B4030;
+    --accent:   #C2542A;
+    --accent2:  #E07040;
+    --gold:     #D4A558;
+    --gold2:    #F0C878;
+    --success:  #2A6B3A;
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.5;
+  }
+
+  .page { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    padding: 1rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 0.5px solid var(--border);
+    position: sticky; top: 0; background: rgba(18,10,6,0.95);
+    backdrop-filter: blur(8px); z-index: 10;
+  }
+  .logo { font-family: 'Lora', serif; font-size: 17px; color: var(--gold); letter-spacing: 0.04em; }
+  .logo span { font-style: italic; color: var(--gold2); }
+  .progress-wrap { flex: 1; margin: 0 1.5rem; }
+  .progress-track { height: 2px; background: var(--border); border-radius: 1px; }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, var(--accent), var(--gold));
+    border-radius: 1px; transition: width 0.5s cubic-bezier(.4,0,.2,1); width: 0%;
+  }
+  .step-badge { font-size: 11px; color: var(--text3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* ── MAIN QUIZ AREA ── */
+  .quiz-wrap {
+    flex: 1; display: flex; align-items: flex-start;
+    justify-content: center; padding: 2.5rem 1rem 4rem;
+  }
+  .quiz-card { width: 100%; max-width: 560px; animation: fadeUp 0.4s ease both; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-tag {
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent2); font-weight: 500; margin-bottom: 0.6rem;
+  }
+  .question-text {
+    font-family: 'Lora', serif;
+    font-size: clamp(19px, 4vw, 24px);
+    font-weight: 400; color: var(--text); line-height: 1.45; margin-bottom: 0.35rem;
+  }
+  .question-sub { font-size: 12px; color: var(--text3); margin-bottom: 1.75rem; }
+
+  /* ── OPTIONS ── */
+  .opts { display: flex; flex-direction: column; gap: 9px; margin-bottom: 2rem; }
+  .opt {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 13px 16px;
+    background: var(--bg2); border: 0.5px solid var(--border);
+    border-radius: 12px; cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    color: var(--text2); font-size: 14px; line-height: 1.45;
+    text-align: left; width: 100%;
+  }
+  .opt:hover { border-color: var(--border2); background: var(--bg3); color: var(--text); }
+  .opt:active { transform: scale(0.99); }
+  .opt.sel { border-color: var(--accent); background: #3D1A0C; color: var(--text); }
+  .opt-letter {
+    width: 26px; height: 26px; flex-shrink: 0;
+    border-radius: 6px; background: var(--bg3); border: 0.5px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500; color: var(--text3);
+    transition: background 0.15s, color 0.15s, border-color 0.15s; margin-top: 1px;
+  }
+  .opt.sel .opt-letter { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* Open text */
+  .open-wrap { margin-bottom: 2rem; }
+  .open-input {
+    width: 100%; min-height: 110px;
+    background: var(--bg2); border: 0.5px solid var(--border);
+    border-radius: 12px; padding: 14px 16px;
+    color: var(--text); font-family: 'Lora', serif; font-size: 15px;
+    line-height: 1.6; resize: vertical; transition: border-color 0.15s;
+  }
+  .open-input:focus { outline: none; border-color: var(--accent); }
+  .open-input::placeholder { color: var(--text3); font-style: italic; }
+
+  /* ── FOOTER ROW ── */
+  .footer-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .wisdom-text {
+    font-family: 'Lora', serif; font-style: italic;
+    font-size: 12px; color: var(--text3); line-height: 1.5; max-width: 220px;
+  }
+  .btn-next {
+    padding: 13px 28px; background: var(--accent); color: #fff;
+    border: none; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    transition: background 0.2s, opacity 0.2s, transform 0.1s;
+    opacity: 0.35; pointer-events: none;
+  }
+  .btn-next.active { opacity: 1; pointer-events: auto; }
+  .btn-next.active:hover { background: var(--accent2); }
+  .btn-next.active:active { transform: scale(0.97); }
+
+  /* ── SCREEN: INTRO ── */
+  .screen-intro { padding: 1rem 0; }
+  .intro-eyebrow {
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent2); margin-bottom: 1rem;
+  }
+  .intro-headline {
+    font-family: 'Lora', serif; font-size: clamp(26px, 6vw, 38px);
+    font-weight: 400; line-height: 1.3; color: var(--text); margin-bottom: 1rem;
+  }
+  .intro-headline em { font-style: italic; color: var(--gold2); }
+  .intro-body { font-size: 14px; color: var(--text2); line-height: 1.7; margin-bottom: 1.75rem; max-width: 480px; }
+  .intro-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2rem; }
+  .pill { font-size: 11px; padding: 4px 12px; border-radius: 20px; border: 0.5px solid var(--border2); color: var(--text3); }
+  .name-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1rem; }
+  .field-label { font-size: 11px; color: var(--text3); letter-spacing: 0.06em; }
+  .field-input {
+    background: var(--bg2); border: 0.5px solid var(--border);
+    border-radius: 8px; padding: 11px 14px;
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
+    transition: border-color 0.15s; width: 100%;
+  }
+  .field-input:focus { outline: none; border-color: var(--accent); }
+  .field-input::placeholder { color: var(--text3); }
+  .city-select {
+    background: var(--bg2); border: 0.5px solid var(--border);
+    border-radius: 8px; padding: 11px 14px;
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
+    width: 100%; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B4030' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center;
+  }
+  .city-select:focus { outline: none; border-color: var(--accent); }
+  .city-select option { background: #2A1509; }
+  .btn-start {
+    width: 100%; padding: 15px; background: var(--accent); color: #fff;
+    border: none; border-radius: 12px;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+    cursor: pointer; transition: background 0.2s, transform 0.1s; margin-top: 0.5rem;
+  }
+  .btn-start:hover { background: var(--accent2); }
+  .btn-start:active { transform: scale(0.98); }
+  .trust-row { display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
+  .trust-item { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 5px; }
+
+  /* ── SCREEN: PAYMENT ── */
+  .screen-pay { padding: 1rem 0; text-align: center; }
+  .pay-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--bg3); border: 0.5px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.25rem; font-size: 22px;
+  }
+  .pay-headline { font-family: 'Lora', serif; font-size: 22px; color: var(--text); margin-bottom: 0.5rem; }
+  .pay-sub { font-size: 13px; color: var(--text2); margin-bottom: 2rem; max-width: 380px; margin-left: auto; margin-right: auto; }
+  .pay-amount { font-family: 'Lora', serif; font-size: 38px; color: var(--gold2); margin-bottom: 0.25rem; }
+  .pay-amount-sub { font-size: 12px; color: var(--text3); margin-bottom: 2rem; }
+  .btn-pay {
+    width: 100%; max-width: 360px; padding: 15px; background: var(--accent); color: #fff;
+    border: none; border-radius: 12px;
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+    cursor: pointer; transition: background 0.2s; display: block; margin: 0 auto 1rem;
+  }
+  .btn-pay:hover { background: var(--accent2); }
+  .mpesa-note { font-size: 11px; color: var(--text3); text-align: center; }
+
+  /* ── SCREEN: THANK YOU ── */
+  .screen-thanks { padding: 2rem 0; text-align: center; }
+  .thanks-icon {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: rgba(42,107,58,0.2); border: 0.5px solid rgba(42,107,58,0.5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; margin: 0 auto 1.5rem;
+    animation: popIn 0.5s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .thanks-headline { font-family: 'Lora', serif; font-size: 24px; color: var(--text); margin-bottom: 0.75rem; }
+  .thanks-body { font-size: 14px; color: var(--text2); line-height: 1.7; max-width: 400px; margin: 0 auto; }
+  .thanks-verse {
+    margin: 1.75rem auto 0; max-width: 340px; padding: 1rem 1.25rem;
+    background: var(--bg2); border: 0.5px solid var(--border);
+    border-radius: 10px; border-left: 2px solid var(--gold);
+    font-family: 'Lora', serif; font-style: italic; font-size: 13px; color: var(--text2); line-height: 1.6;
+  }
+  .thanks-verse cite { font-style: normal; font-size: 11px; color: var(--text3); display: block; margin-top: 6px; }
+
+  /* ── TRANSITIONS ── */
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeUp 0.35s ease both; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 480px) {
+    .topbar { padding: 0.85rem 1rem; }
+    .quiz-wrap { padding: 1.75rem 0.85rem 3rem; }
+    .footer-row { flex-direction: column-reverse; align-items: stretch; }
+    .btn-next { width: 100%; text-align: center; }
+    .wisdom-text { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="logo">Ndoa<span>Match</span></div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <div class="step-badge" id="stepBadge"></div>
+  </div>
+
+  <!-- QUIZ WRAP -->
+  <div class="quiz-wrap">
+    <div class="quiz-card">
+
+      <!-- SCREEN: INTRO -->
+      <div class="screen active" id="screenIntro">
+        <div class="screen-intro">
+          <div class="intro-eyebrow">NdoaMatch · Personality Quiz</div>
+          <h1 class="intro-headline">Know who you're<br><em>called to marry.</em></h1>
+          <p class="intro-body">15 honest questions. One deeply personalised report — built on relationship psychology and Kenyan cultural insight. Discover your ideal partner's profile, where to find them in Kenya, and how to attract them.</p>
+          <div class="intro-pills">
+            <span class="pill">5 minutes</span>
+            <span class="pill">KES 250</span>
+            <span class="pill">Report to your inbox</span>
+            <span class="pill">Mpesa accepted</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:0.85rem;">
+            <div class="name-row">
+              <label class="field-label">Your first name</label>
+              <input class="field-input" id="fname" type="text" placeholder="e.g. Wanjiru" autocomplete="given-name">
+            </div>
+            <div class="name-row">
+              <label class="field-label">Email address</label>
+              <input class="field-input" id="femail" type="email" placeholder="your@email.com" autocomplete="email">
+            </div>
+          </div>
+          <div class="name-row" style="margin-bottom:1.25rem;">
+            <label class="field-label">Your city / county</label>
+            <select class="city-select" id="fcity">
+              <option value="">Select your city...</option>
+              <option>Nairobi</option><option>Mombasa</option><option>Kisumu</option>
+              <option>Nakuru</option><option>Eldoret</option><option>Thika</option>
+              <option>Nyeri</option><option>Meru</option><option>Kakamega</option>
+              <option>Garissa</option><option>Machakos</option><option>Other</option>
+            </select>
+          </div>
+          <button class="btn-start" onclick="startQuiz()">Begin the Quiz →</button>
+          <div class="trust-row">
+            <span class="trust-item">🔒 Private &amp; confidential</span>
+            <span class="trust-item">✦ Secure payment via Paystack</span>
+            <span class="trust-item">📩 Report in minutes</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN: QUESTION -->
+      <div class="screen" id="screenQ">
+        <div class="section-tag" id="qTag"></div>
+        <h2 class="question-text" id="qText"></h2>
+        <p class="question-sub" id="qSub"></p>
+        <div class="opts" id="qOpts"></div>
+        <div class="open-wrap" id="qOpenWrap" style="display:none;">
+          <textarea class="open-input" id="qOpenText" placeholder="Write whatever feels true for you..." rows="4" oninput="onOpenInput()"></textarea>
+        </div>
+        <div class="footer-row">
+          <p class="wisdom-text" id="qWisdom"></p>
+          <button class="btn-next" id="btnNext" onclick="nextQuestion()">Continue →</button>
+        </div>
+      </div>
+
+      <!-- SCREEN: PAYMENT -->
+      <div class="screen" id="screenPay">
+        <div class="screen-pay">
+          <div class="pay-icon">💌</div>
+          <h2 class="pay-headline">Your report is ready to generate</h2>
+          <p class="pay-sub">You've answered all 15 questions. One secure payment and your personalised NdoaMatch report will be on its way to <strong id="payEmail"></strong></p>
+          <div class="pay-amount">KES 250</div>
+          <div class="pay-amount-sub">One-time · Your report arrives in minutes</div>
+          <button class="btn-pay" id="btnPay" onclick="payNow()">Pay with Mpesa / Card →</button>
+          <p class="mpesa-note">Secured by Paystack · Mpesa, Visa, Mastercard accepted</p>
+        </div>
+      </div>
+
+      <!-- SCREEN: THANK YOU -->
+      <div class="screen" id="screenThanks">
+        <div class="screen-thanks">
+          <div class="thanks-icon">✓</div>
+          <h2 class="thanks-headline">Payment received. 🙏</h2>
+          <p class="thanks-body">Your NdoaMatch report is being prepared right now. It will arrive in your inbox within the next few minutes. Check your spam folder if you don't see it.</p>
+          <blockquote class="thanks-verse">
+            "Two are better than one, because they have a good return for their labour. If either of them falls down, one can help the other up."
+            <cite>— Ecclesiastes 4:9–10</cite>
+          </blockquote>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  CONFIG
+//  ✅ SAFE to have in HTML (public keys only)
+//  🔒 Secret keys (Anthropic, Airtable) live in Zapier ONLY — never here
+// ─────────────────────────────────────────────
+const PAYSTACK_PUBLIC_KEY = 'pk_test_YOUR_PAYSTACK_PUBLIC_KEY'; // replace with pk_live_... before going live
+const ZAPIER_WEBHOOK_URL  = 'https://hooks.zapier.com/hooks/catch/26946217/uppsiws/';
+const AMOUNT_KOBO         = 25000; // KES 250 = 25000 kobo (100 kobo = 1 KES)
+
+// ─────────────────────────────────────────────
+//  QUIZ DATA
+// ─────────────────────────────────────────────
+const SECTIONS = {
+  faith:    'Faith & spirit',
+  who:      'Who you are',
+  want:     'What you want',
+  patterns: 'Your patterns',
+  final:    'Final reflection'
+};
+
+const WISDOM = [
+  '"Mtu ni watu — you become who you choose to be with."',
+  '"The heart that knows itself attracts what it truly needs."',
+  '"Subira huvuta heri — patience draws blessings closer."',
+  '"Do not rush what God is building slowly."',
+  '"Marry the person you can pray with, not just play with."',
+  '"Upendo si msemo tu — love is action, every single day."',
+  '"The right person will not require you to shrink."',
+  '"Thamani yako haiamui mtu — your worth is not for anyone to decide."',
+  '"A home built on honesty will never run out of rooms."',
+  '"Hakuna haraka ya kupoteza mtu wa kweli."',
+  '"The most dangerous love is the one that requires you to be someone else."',
+  '"Choose someone who chooses you — even on ordinary Tuesdays."',
+  '"A prayerful morning together is worth more than a thousand exciting nights."',
+  '"Roho yako inajua — your soul already knows."',
+  '"The person you\'re called to marry is also being prepared."',
+];
+
+const ALL_QUESTIONS = [
+  // Q0 — FAITH TRACK SELECTOR (shown first to everyone)
+  {
+    id: 'q0', section: 'faith',
+    q: 'First — how central is faith to your life and your idea of marriage?',
+    sub: 'This shapes your entire report. There are no wrong answers — only honest ones.',
+    type: 'choice', wisdomIdx: 0, faithTrack: null,
+    opts: [
+      { key: 'A', text: 'Faith is everything — my marriage must be built on a shared spiritual foundation' },
+      { key: 'B', text: 'Faith matters to me — I want alignment on values, not just attendance' },
+      { key: 'C', text: 'I\'m spiritual but not religious — I believe in something greater' },
+      { key: 'D', text: 'I\'m not religious — I live by strong values, not organised faith' },
+    ]
+  },
+  // Q1 — Social personality
+  {
+    id: 'q1', section: 'who',
+    q: 'How would your closest friends describe you at a social gathering?',
+    sub: 'Choose the one that feels most honest',
+    type: 'choice', wisdomIdx: 1, faithTrack: null,
+    opts: [
+      { key: 'A', text: 'The life of the party — I know everyone and love it' },
+      { key: 'B', text: 'Warm and friendly, but I need a corner to recharge after' },
+      { key: 'C', text: 'There for the people I already know — deep convos over small talk' },
+      { key: 'D', text: 'I observe, listen, and speak only when I have something worth saying' },
+    ]
+  },
+  // Q2 — Conflict style
+  {
+    id: 'q2', section: 'who',
+    q: 'When things get tense in a relationship, what do you naturally do?',
+    sub: 'Be honest — this shapes your compatibility profile',
+    type: 'choice', wisdomIdx: 2, faithTrack: null,
+    opts: [
+      { key: 'A', text: 'Face it head on — silence makes it worse' },
+      { key: 'B', text: 'I need time to cool down before we talk' },
+      { key: 'C', text: 'Try to keep the peace and avoid the confrontation' },
+      { key: 'D', text: 'Withdraw alone, process it, then come back ready' },
+    ]
+  },
+  // Q3 — Core values
+  {
+    id: 'q3', section: 'who',
+    q: 'Which of these matters MOST to you in a life partner?',
+    sub: 'Only one — the one you\'d never compromise on',
+    type: 'choice', wisdomIdx: 3, faithTrack: null,
+    opts: [
+      { key: 'A', text: 'Deep faith and spiritual alignment — equally yoked' },
+      { key: 'B', text: 'Ambition and drive — building something great together' },
+      { key: 'C', text: 'Emotional safety — someone I can be fully myself around' },
+      { key: 'D', text: 'Family values — they must love children and family deeply' },
+      { key: 'E', text: 'Fun, adventure and shared experiences' },
+    ]
+  },
+  // Q4 — Love language
+  {
+    id: 'q4', section: 'who',
+    q: 'What does love look like to you in day-to-day life?',
+    sub: 'How do YOU feel most loved?',
+    type: 'choice', wisdomIdx: 4, faithTrack: null,
+    opts: [
+      { key: 'A', text: 'Small surprises and thoughtful gestures — they were thinking of me' },
+      { key: 'B', text: 'Time — their full attention, no phones' },
+      { key: 'C', text: 'Words — being told often that they love and appreciate me' },
+      { key: 'D', text: 'Touch — physical closeness, hugs, holding hands' },
+      { key: 'E', text: 'Actions — they show up and do things without being asked' },
+    ]
+  },
+  // Q5 — Money
+  {
+    id: 'q5', section: 'who',
+    q: 'Honestly — how are you with money in a relationship?',
+    sub: 'No judgement here — financial compatibility matters',
+    type: 'choice', wisdomIdx: 5, faithTrack: null,
+    opts: [
+      { key: 'A', text: 'What\'s mine is ours — we pool everything' },
+      { key: 'B', text: 'I contribute my share but keep some independence' },
+      { key: 'C', text: 'I\'m the provider type — I want to take care of my partner' },
+      { key: 'D', text: 'I expect my partner to be financially stable before we get serious' },
+      { key: 'E', text: 'I care more about alignment on goals than who earns what' },
+    ]
+  },
+  // Q6-AB — Sunday (faith version)
+  {
+    id: 'q6ab', section: 'want',
+    q: 'Imagine your partner on a Sunday. Where are they?',
+    sub: 'Paint the picture of their ideal Sunday',
+    type: 'choice', wisdomIdx: 6, faithTrack: 'AB',
+    opts: [
+      { key: 'A', text: 'In church — and probably serving or leading there' },
+      { key: 'B', text: 'Home, peaceful prayerful morning, then family time' },
+      { key: 'C', text: 'Out serving the community or volunteering' },
+      { key: 'D', text: 'Gym in the morning, church or reflection in the evening' },
+      { key: 'E', text: 'Wherever the Spirit leads — consistent but not rigid' },
+    ]
+  },
+  // Q6-CD — Sunday (secular version)
+  {
+    id: 'q6cd', section: 'want',
+    q: 'Imagine your partner on a Sunday. Where are they?',
+    sub: 'Paint the picture of their ideal Sunday',
+    type: 'choice', wisdomIdx: 6, faithTrack: 'CD',
+    opts: [
+      { key: 'A', text: 'Home, cooking something good and watching a series' },
+      { key: 'B', text: 'At the gym, running, or outdoors in nature' },
+      { key: 'C', text: 'Out networking, brunch, or growing their business' },
+      { key: 'D', text: 'Volunteering or giving back in the community' },
+      { key: 'E', text: 'Travelling, exploring, or trying something new' },
+    ]
+  },
+  // Q7 — Cultural alignment
+  {
+    id: 'q7', section: 'want',
+    q: 'How important is it that your partner shares your tribe or cultural background?',
+    sub: 'Be honest — this is a real question in Kenya',
+    type: 'choice', wisdomIdx: 7, faithTrack: null,
+    opts: [
+      { key: 'A', text: 'Very important — shared culture is the foundation of a strong home' },
+      { key: 'B', text: 'Somewhat — values matter more than tribe, but culture counts' },
+      { key: 'C', text: 'Not important at all — love crosses every boundary' },
+      { key: 'D', text: 'I actually prefer someone from a different background — it excites me' },
+    ]
+  },
+  // Q8 — Attraction
+  {
+    id: 'q8', section: 'want',
+    q: 'What would make you fall deepest for someone?',
+    sub: 'The thing that gets you — really gets you',
+    type: 'choice', wisdomIdx: 8, faithTrack: null,
+    opts: [
+      { key: 'A', text: 'Their mind — intelligent, curious, always learning' },
+      { key: 'B', text: 'Their warmth — kind, gentle, everyone feels safe around them' },
+      { key: 'C', text: 'Their ambition — going somewhere and taking me with them' },
+      { key: 'D', text: 'Their consistency — steady, reliable, they do what they say' },
+      { key: 'E', text: 'Their humour — they make even hard days lighter' },
+    ]
+  },
+  // Q9 — Dealbreaker
+  {
+    id: 'q9', section: 'want',
+    q: 'What\'s your honest dealbreaker — the one thing that would end it?',
+    sub: 'No matter how much you like someone',
+    type: 'choice', wisdomIdx: 9, faithTrack: null,
+    opts: [
+      { key: 'A', text: 'Dishonesty — I can\'t trust someone I can\'t trust' },
+      { key: 'B', text: 'No spiritual life — that matters deeply to me' },
+      { key: 'C', text: 'Financial irresponsibility — I can\'t build with them' },
+      { key: 'D', text: 'Emotional unavailability — I need someone who can talk to me' },
+      { key: 'E', text: 'Disrespecting my family or dismissing my culture' },
+    ]
+  },
+  // Q10-AB — 5 year (faith version)
+  {
+    id: 'q10ab', section: 'want',
+    q: 'Where do you honestly expect to be in 5 years?',
+    sub: 'Your real expectation, not the polished answer',
+    type: 'choice', wisdomIdx: 10, faithTrack: 'AB',
+    opts: [
+      { key: 'A', text: 'Married — raising a family in faith, building a God-honouring home' },
+      { key: 'B', text: 'Married and building careers together, trusting God with the timeline' },
+      { key: 'C', text: 'Engaged and planning — not rushing but on the path' },
+      { key: 'D', text: 'In a serious relationship, seeking God\'s direction together' },
+      { key: 'E', text: 'Surrendered — open to wherever God leads, not forcing timelines' },
+    ]
+  },
+  // Q10-CD — 5 year (secular version)
+  {
+    id: 'q10cd', section: 'want',
+    q: 'Where do you honestly expect to be in 5 years?',
+    sub: 'Your real expectation, not the polished answer',
+    type: 'choice', wisdomIdx: 10, faithTrack: 'CD',
+    opts: [
+      { key: 'A', text: 'Married with at least one child' },
+      { key: 'B', text: 'Married and building careers together, kids a bit later' },
+      { key: 'C', text: 'Engaged and planning — not rushing but moving forward' },
+      { key: 'D', text: 'In a serious relationship, seeing where it leads' },
+      { key: 'E', text: 'Open — I\'m not in a hurry, I want it to happen naturally' },
+    ]
+  },
+  // Q11 — Self-awareness
+  {
+    id: 'q11', section: 'patterns',
+    q: 'What do people who\'ve dated you say about you — the honest version?',
+    sub: 'Not the compliments — the real feedback',
+    type: 'choice', wisdomIdx: 11, faithTrack: null,
+    opts: [
+      { key: 'A', text: 'Loving and giving — sometimes too much' },
+      { key: 'B', text: 'Independent and strong — sometimes hard to reach emotionally' },
+      { key: 'C', text: 'Loyal and steady — maybe not the most expressive' },
+      { key: 'D', text: 'Passionate and exciting — but I can be intense' },
+      { key: 'E', text: 'A great support system — I forget to ask for the same back' },
+    ]
+  },
+  // Q12 — Relationship history
+  {
+    id: 'q12', section: 'patterns',
+    q: 'How long did your last serious relationship last, and why did it end?',
+    sub: 'This helps calibrate your readiness profile',
+    type: 'choice', wisdomIdx: 12, faithTrack: null,
+    opts: [
+      { key: 'A', text: 'Less than 1 year — we wanted different things too early' },
+      { key: 'B', text: '1–3 years — good but not right for marriage' },
+      { key: 'C', text: '3+ years — it ran its course or life circumstances changed' },
+      { key: 'D', text: 'I haven\'t had a serious relationship yet' },
+      { key: 'E', text: 'I\'ve been married before — I\'m starting again' },
+    ]
+  },
+  // Q13 — Stress needs
+  {
+    id: 'q13', section: 'patterns',
+    q: 'In moments of stress, what do you need from a partner?',
+    sub: 'Your honest answer — not the "right" one',
+    type: 'choice', wisdomIdx: 13, faithTrack: null,
+    opts: [
+      { key: 'A', text: 'Presence — sit with me quietly, that\'s enough' },
+      { key: 'B', text: 'Practical help — solve the problem with me' },
+      { key: 'C', text: 'Encouragement — remind me I\'m capable' },
+      { key: 'D', text: 'Space — let me process alone, then check in' },
+      { key: 'E', text: 'Distraction — make me laugh or take me out' },
+    ]
+  },
+  // Q14 — Family closeness
+  {
+    id: 'q14', section: 'patterns',
+    q: 'How do you feel about a partner who is very close to their family?',
+    sub: 'In Kenya, this matters more than most people admit',
+    type: 'choice', wisdomIdx: 14, faithTrack: null,
+    opts: [
+      { key: 'A', text: 'I love it — I want to marry the whole family' },
+      { key: 'B', text: 'Beautiful, as long as there are healthy boundaries' },
+      { key: 'C', text: 'I need to come first — not the family' },
+      { key: 'D', text: 'It makes me nervous — family can complicate things' },
+      { key: 'E', text: 'I haven\'t thought deeply about this yet' },
+    ]
+  },
+  // Q15-AB — Faith deep dive (only for faith tracks)
+  {
+    id: 'q15ab', section: 'final',
+    q: 'What does a spiritually healthy marriage look like to you?',
+    sub: 'Be specific — this is the heart of your report',
+    type: 'choice', wisdomIdx: 0, faithTrack: 'AB',
+    opts: [
+      { key: 'A', text: 'We pray together daily, attend church, God is the third strand' },
+      { key: 'B', text: 'Shared faith and values, even if our practices look different' },
+      { key: 'C', text: 'We support each other\'s spiritual journeys at different levels' },
+      { key: 'D', text: 'Faith is personal — we respect it but don\'t impose on each other' },
+      { key: 'E', text: 'I want a partner on a growth journey, even if not fully there yet' },
+    ]
+  },
+  // Q15-open — Final reflection (all tracks)
+  {
+    id: 'q15open', section: 'final',
+    q: 'Finish this sentence: "The version of me that shows up in marriage will be..."',
+    sub: '1–3 sentences. Write whatever is true — not what sounds good.',
+    type: 'open', wisdomIdx: 13, faithTrack: null,
+  },
+];
+
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
+let userName       = '';
+let userEmail      = '';
+let userCity       = '';
+let faithTrack     = null;
+let answers        = {};
+let activeQuestions = [];
+let currentIdx     = 0;
+
+// FIX: Quiz completion guard — prevents console bypass of payment screen
+let quizCompleted  = false;
+// FIX: Payment guard — prevents double-clicking Pay button
+let paymentInitiated = false;
+
+// ─────────────────────────────────────────────
+//  SCREENS
+// ─────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ─────────────────────────────────────────────
+//  START
+// ─────────────────────────────────────────────
+function startQuiz() {
+  userName  = document.getElementById('fname').value.trim();
+  userEmail = document.getElementById('femail').value.trim();
+  userCity  = document.getElementById('fcity').value;
+
+  if (!userName)  { alert('Please enter your first name to continue.'); return; }
+  if (!userEmail || !userEmail.includes('@')) { alert('Please enter a valid email address.'); return; }
+  if (!userCity)  { alert('Please select your city or county.'); return; }
+
+  // Reset all state for a clean quiz run
+  currentIdx       = 0;
+  answers          = {};
+  quizCompleted    = false;
+  paymentInitiated = false;
+  faithTrack       = null;
+
+  // Start with Q0 (faith track selector) only
+  activeQuestions = [ALL_QUESTIONS[0]];
+  showScreen('screenQ');
+  renderQuestion();
+}
+
+// ─────────────────────────────────────────────
+//  BUILD ACTIVE QUESTION LIST (called after Q0)
+// ─────────────────────────────────────────────
+function buildActiveList(track) {
+  const group = (track === 'A' || track === 'B') ? 'AB' : 'CD';
+  const result = [];
+  for (const q of ALL_QUESTIONS) {
+    if (q.id === 'q0') continue; // already answered, skip
+    if (q.faithTrack === null) { result.push(q); continue; }
+    if (q.faithTrack === group) { result.push(q); continue; }
+    // skip questions belonging to the other faith group
+  }
+  return result;
+}
+
+// ─────────────────────────────────────────────
+//  RENDER QUESTION
+// ─────────────────────────────────────────────
+function renderQuestion() {
+  const q = activeQuestions[currentIdx];
+  if (!q) return; // safety guard
+
+  const globalStep = currentIdx + 2; // +1 for Q0 done, +1 for 1-based numbering
+  const totalSteps = activeQuestions.length + 1;
+
+  const pct = Math.round((globalStep / totalSteps) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('stepBadge').textContent = globalStep + ' / ' + totalSteps;
+
+  document.getElementById('qTag').textContent    = SECTIONS[q.section] || '';
+  document.getElementById('qText').textContent   = q.q;
+  document.getElementById('qSub').textContent    = q.sub || '';
+  document.getElementById('qWisdom').textContent = WISDOM[q.wisdomIdx] || '';
+
+  const optsEl   = document.getElementById('qOpts');
+  const openWrap = document.getElementById('qOpenWrap');
+  const openText = document.getElementById('qOpenText');
+  const btnNext  = document.getElementById('btnNext');
+
+  btnNext.classList.remove('active');
+
+  if (q.type === 'open') {
+    optsEl.style.display   = 'none';
+    openWrap.style.display = 'block';
+    openText.value = answers[q.id] || '';
+    if (openText.value.trim().length > 0) btnNext.classList.add('active');
+    btnNext.textContent = 'Finish →';
+  } else {
+    optsEl.style.display   = 'flex';
+    openWrap.style.display = 'none';
+    btnNext.textContent    = (currentIdx === activeQuestions.length - 1) ? 'Finish →' : 'Continue →';
+    optsEl.innerHTML       = '';
+
+    q.opts.forEach(o => {
+      const btn = document.createElement('button');
+      btn.className = 'opt' + (answers[q.id] === o.key ? ' sel' : '');
+      btn.innerHTML = `<span class="opt-letter">${o.key}</span>${o.text}`;
+      btn.onclick = () => {
+        document.querySelectorAll('.opt').forEach(x => x.classList.remove('sel'));
+        btn.classList.add('sel');
+        answers[q.id] = o.key;
+        btnNext.classList.add('active');
+
+        // FIX: Faith track branching — rebuild question list immediately after Q0
+        if (q.id === 'q0') {
+          faithTrack      = o.key;
+          activeQuestions = buildActiveList(faithTrack);
+          currentIdx      = -1; // nextQuestion() will increment to 0
+        }
+      };
+      optsEl.appendChild(btn);
+    });
+  }
+}
+
+function onOpenInput() {
+  const val = document.getElementById('qOpenText').value.trim();
+  const btn = document.getElementById('btnNext');
+  if (val.length > 0) btn.classList.add('active');
+  else btn.classList.remove('active');
+  answers['q15open'] = document.getElementById('qOpenText').value; // save with original spacing
+}
+
+// ─────────────────────────────────────────────
+//  NEXT QUESTION
+// ─────────────────────────────────────────────
+function nextQuestion() {
+  // Save open text answer before moving on
+  const q = activeQuestions[currentIdx];
+  if (q && q.type === 'open') {
+    answers['q15open'] = document.getElementById('qOpenText').value.trim();
+  }
+
+  currentIdx++;
+
+  if (currentIdx >= activeQuestions.length) {
+    // FIX: Set guard flag — only this path can unlock the payment screen
+    quizCompleted = true;
+    showPayment();
+    return;
+  }
+  renderQuestion();
+}
+
+// ─────────────────────────────────────────────
+//  PAYMENT SCREEN
+//  FIX: Guard against console bypass — quizCompleted must be true
+// ─────────────────────────────────────────────
+function showPayment() {
+  if (!quizCompleted) {
+    console.warn('NdoaMatch: Quiz not completed. Payment screen blocked.');
+    return;
+  }
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('stepBadge').textContent    = 'Done!';
+  document.getElementById('payEmail').textContent     = userEmail;
+  showScreen('screenPay');
+}
+
+// ─────────────────────────────────────────────
+//  PAYSTACK
+//  FIX: paymentInitiated guard prevents double-clicks / double charges
+// ─────────────────────────────────────────────
+function payNow() {
+  // Guard: must have completed quiz
+  if (!quizCompleted) return;
+
+  // Guard: prevent double payment popup
+  if (paymentInitiated) return;
+  paymentInitiated = true;
+
+  // Disable button visually
+  const btn = document.getElementById('btnPay');
+  if (btn) { btn.disabled = true; btn.textContent = 'Opening payment...'; }
+
+  const handler = PaystackPop.setup({
+    key:      PAYSTACK_PUBLIC_KEY,
+    email:    userEmail,
+    amount:   AMOUNT_KOBO,
+    currency: 'KES',
+    ref:      'NM_' + Date.now(),
+    metadata: {
+      custom_fields: [
+        { display_name: 'Name',        variable_name: 'name',        value: userName  },
+        { display_name: 'City',        variable_name: 'city',        value: userCity  },
+        { display_name: 'Faith Track', variable_name: 'faith_track', value: faithTrack },
+      ]
+    },
+    callback: function(response) {
+      // Payment confirmed by Paystack — now send data to Zapier
+      showScreen('screenThanks'); // show immediately, don't wait for Zapier
+      submitToZapier(response.reference);
+    },
+    onClose: function() {
+      // User closed Paystack popup without paying — re-enable button
+      paymentInitiated = false;
+      if (btn) { btn.disabled = false; btn.textContent = 'Pay with Mpesa / Card →'; }
+    }
+  });
+  handler.openIframe();
+}
+
+// ─────────────────────────────────────────────
+//  ZAPIER SUBMISSION
+//  Sends all answers securely to Zapier webhook.
+//  Zapier then talks to Airtable + Anthropic + Gmail.
+//  No API keys are needed here — they live in Zapier only.
+// ─────────────────────────────────────────────
+function submitToZapier(payRef) {
+  const payload = {
+    // User info
+    name:        userName,
+    email:       userEmail,
+    city:        userCity,
+    faith_track: faithTrack,
+    payment_ref: payRef,
+    timestamp:   new Date().toISOString(),
+    // All quiz answers
+    q0_faith_track:     answers['q0']      || '',
+    q1_social:          answers['q1']      || '',
+    q2_conflict:        answers['q2']      || '',
+    q3_values:          answers['q3']      || '',
+    q4_love_language:   answers['q4']      || '',
+    q5_money:           answers['q5']      || '',
+    q6_partner_sunday:  answers['q6ab']    || answers['q6cd']  || '',
+    q7_culture:         answers['q7']      || '',
+    q8_attraction:      answers['q8']      || '',
+    q9_dealbreaker:     answers['q9']      || '',
+    q10_five_years:     answers['q10ab']   || answers['q10cd'] || '',
+    q11_self_awareness: answers['q11']     || '',
+    q12_history:        answers['q12']     || '',
+    q13_stress_needs:   answers['q13']     || '',
+    q14_family:         answers['q14']     || '',
+    q15_faith_marriage: answers['q15ab']   || '',
+    q15_open_text:      answers['q15open'] || '',
+  };
+
+  fetch(ZAPIER_WEBHOOK_URL, {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify(payload),
+  })
+  .then(() => {
+    // Success — Zapier received the data
+    console.log('NdoaMatch: Submission sent to Zapier successfully.');
+  })
+  .catch(err => {
+    // Zapier failed — user already sees thanks screen.
+    // Zapier can also retry via its dashboard.
+    console.error('NdoaMatch: Zapier submission failed.', err);
+  });
+}
+
+// ── Init: hide progress bar on intro screen
+document.getElementById('progressFill').style.width = '0%';
+document.getElementById('stepBadge').textContent    = '';
+</script>
+</body>
+</html>
