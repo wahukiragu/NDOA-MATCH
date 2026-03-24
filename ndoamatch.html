@@ -347,9 +347,9 @@
 //  ✅ SAFE to have in HTML (public keys only)
 //  🔒 Secret keys (Anthropic, Airtable) live in Zapier ONLY — never here
 // ─────────────────────────────────────────────
-const PAYSTACK_PUBLIC_KEY = 'pk_test_YOUR_PAYSTACK_PUBLIC_KEY'; // replace with pk_live_... before going live
-const ZAPIER_WEBHOOK_URL  = 'https://hooks.zapier.com/hooks/catch/26946217/uppsiws/';
-const AMOUNT_KOBO         = 25000; // KES 250 = 25000 kobo (100 kobo = 1 KES)
+const PAYSTACK_PUBLIC_KEY = window.__NM_PK__   || '';
+const ZAPIER_WEBHOOK_URL  = window.__NM_ZAPIER__ || '';
+const AMOUNT_KOBO         = 25000;
 
 // ─────────────────────────────────────────────
 //  QUIZ DATA
