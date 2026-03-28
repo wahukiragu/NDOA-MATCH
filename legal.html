@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NdoaMatch — Legal & Policies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #120A06; --bg2: #1E0E08; --bg3: #2A1509;
+    --border: #3D1F10; --border2: #5C3020;
+    --text: #F0E2CC; --text2: #B08060; --text3: #6B4030;
+    --accent: #C2542A; --accent2: #E07040;
+    --gold: #D4A558; --gold2: #F0C878;
+  }
+  html, body {
+    min-height: 100vh; background: var(--bg);
+    color: var(--text); font-family: 'DM Sans', sans-serif;
+    font-size: 16px; line-height: 1.7; -webkit-font-smoothing: antialiased;
+  }
+  /* NAV */
+  .topbar {
+    padding: 1rem 1.5rem; display: flex; align-items: center;
+    justify-content: space-between; border-bottom: 0.5px solid var(--border);
+    background: rgba(18,10,6,0.97); position: sticky; top: 0; z-index: 10;
+  }
+  .logo { font-family: 'Lora', serif; font-size: 17px; color: var(--gold); text-decoration: none; }
+  .logo span { font-style: italic; color: var(--gold2); }
+  .back-link { font-size: 13px; color: var(--text3); text-decoration: none; }
+  .back-link:hover { color: var(--text2); }
+
+  /* TAB NAV */
+  .tab-nav {
+    display: flex; gap: 0; border-bottom: 0.5px solid var(--border);
+    background: var(--bg2); overflow-x: auto; padding: 0 1.5rem;
+  }
+  .tab-btn {
+    padding: 0.85rem 1.25rem; font-size: 13px; font-weight: 500;
+    color: var(--text3); background: none; border: none;
+    border-bottom: 2px solid transparent; cursor: pointer;
+    white-space: nowrap; transition: color 0.15s, border-color 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .tab-btn:hover { color: var(--text2); }
+  .tab-btn.active { color: var(--gold); border-bottom-color: var(--accent); }
+
+  /* CONTENT */
+  .content-wrap { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+  .page-section { display: none; }
+  .page-section.active { display: block; }
+
+  h1 { font-family: 'Lora', serif; font-size: 28px; font-weight: 400;
+       color: var(--text); margin-bottom: 0.5rem; }
+  .page-date { font-size: 12px; color: var(--text3); margin-bottom: 2.5rem; }
+  h2 { font-family: 'Lora', serif; font-size: 18px; font-weight: 600;
+       color: var(--gold); margin: 2rem 0 0.75rem; }
+  p { color: var(--text2); margin-bottom: 1rem; font-size: 15px; }
+  ul, ol { color: var(--text2); margin: 0 0 1rem 1.25rem; font-size: 15px; }
+  li { margin-bottom: 0.4rem; }
+  strong { color: var(--text); font-weight: 500; }
+  a { color: var(--accent2); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .highlight-box {
+    background: var(--bg2); border: 0.5px solid var(--border);
+    border-left: 2px solid var(--accent); border-radius: 8px;
+    padding: 1rem 1.25rem; margin: 1.5rem 0;
+  }
+  .highlight-box p { margin: 0; font-size: 14px; }
+
+  /* FAQ */
+  .faq-item { border-bottom: 0.5px solid var(--border); padding: 1.25rem 0; }
+  .faq-q {
+    font-size: 15px; font-weight: 500; color: var(--text);
+    cursor: pointer; display: flex; justify-content: space-between;
+    align-items: center; gap: 1rem; background: none; border: none;
+    width: 100%; text-align: left; padding: 0; font-family: 'DM Sans', sans-serif;
+  }
+  .faq-q:hover { color: var(--gold); }
+  .faq-chevron { color: var(--text3); font-size: 18px; flex-shrink: 0; transition: transform 0.2s; }
+  .faq-a { font-size: 14px; color: var(--text2); margin-top: 0.75rem; line-height: 1.7; display: none; }
+  .faq-item.open .faq-a { display: block; }
+  .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+  /* CONTACT */
+  .contact-card {
+    background: var(--bg2); border: 0.5px solid var(--border);
+    border-radius: 12px; padding: 1.5rem; margin-top: 2rem;
+  }
+  .contact-card p { margin: 0.3rem 0; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/" class="logo">Ndoa<span>Match</span></a>
+  <a href="/" class="back-link">← Back to quiz</a>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('terms')">Terms & Conditions</button>
+  <button class="tab-btn" onclick="showTab('refund')">Refund Policy</button>
+  <button class="tab-btn" onclick="showTab('faq')">FAQs</button>
+  <button class="tab-btn" onclick="showTab('privacy')">Privacy Policy</button>
+</div>
+
+<div class="content-wrap">
+
+  <!-- ── TERMS & CONDITIONS ── -->
+  <div class="page-section active" id="tab-terms">
+    <h1>Terms & Conditions</h1>
+    <p class="page-date">Last updated: March 2026</p>
+
+    <div class="highlight-box">
+      <p>By using NdoaMatch and making a payment, you agree to these terms. Please read them carefully before proceeding.</p>
+    </div>
+
+    <h2>1. About NdoaMatch</h2>
+    <p>NdoaMatch is a personality quiz and AI-powered report service operated by <strong>IPWORTH LTD</strong>, a company registered in Kenya. We help individuals understand their relationship personality profile and identify the characteristics of a compatible long-term partner.</p>
+
+    <h2>2. The Service</h2>
+    <p>NdoaMatch provides:</p>
+    <ul>
+      <li>A 15-question online personality quiz</li>
+      <li>A personalised AI-generated report delivered to your email address</li>
+      <li>Insights based on relationship psychology and Kenyan cultural context</li>
+    </ul>
+    <p>The report is for <strong>personal guidance and informational purposes only</strong>. It is not a substitute for professional relationship counselling, therapy, or legal advice.</p>
+
+    <h2>3. Eligibility</h2>
+    <p>You must be at least 18 years of age to use this service. By proceeding with the quiz and payment, you confirm that you are 18 or older.</p>
+
+    <h2>4. Payment</h2>
+    <p>The current price for a NdoaMatch report is <strong>KES 250</strong>, payable via Paystack. We accept Mpesa, Visa, and Mastercard. Payment is required before your report is generated and delivered.</p>
+    <p>All transactions are processed securely by Paystack. IPWORTH LTD does not store your card or Mpesa details.</p>
+
+    <h2>5. Report Delivery</h2>
+    <p>Your personalised report will be delivered to the email address you provided during the quiz, typically within <strong>5–15 minutes</strong> of payment confirmation. Delivery may occasionally take up to 30 minutes. Please check your spam or junk folder if you do not see it.</p>
+    <p>If your report has not arrived within 1 hour, contact us at <a href="mailto:support@ndoamatch.co.ke">support@ndoamatch.co.ke</a> with your payment reference number.</p>
+
+    <h2>6. Intellectual Property</h2>
+    <p>All content produced by NdoaMatch — including the quiz questions, report text, brand name, and AI prompts — is the exclusive intellectual property of IPWORTH LTD. You may not reproduce, share commercially, or republish any part of your report without our written permission. Personal sharing (forwarding to a friend, posting a screenshot) is permitted.</p>
+
+    <h2>7. Disclaimer</h2>
+    <p>NdoaMatch reports are generated using artificial intelligence based on your quiz responses. While grounded in relationship psychology research, they are <strong>not guaranteed predictions</strong> and should be treated as thoughtful guidance, not absolute truth. Relationships are complex and individual outcomes will vary.</p>
+    <p>IPWORTH LTD is not liable for any decisions made based on the report content.</p>
+
+    <h2>8. Governing Law</h2>
+    <p>These terms are governed by the laws of the <strong>Republic of Kenya</strong>. Any disputes shall be resolved under Kenyan jurisdiction.</p>
+
+    <h2>9. Changes to Terms</h2>
+    <p>We may update these terms from time to time. Continued use of the service after changes constitutes acceptance of the updated terms.</p>
+
+    <h2>10. Contact</h2>
+    <p>For any questions about these terms, contact us at <a href="mailto:support@ndoamatch.co.ke">support@ndoamatch.co.ke</a></p>
+  </div>
+
+  <!-- ── REFUND POLICY ── -->
+  <div class="page-section" id="tab-refund">
+    <h1>Refund Policy</h1>
+    <p class="page-date">Last updated: March 2026</p>
+
+    <div class="highlight-box">
+      <p><strong>Summary:</strong> We offer a full refund if your report is not delivered within 24 hours of payment. We do not offer refunds once a report has been successfully delivered.</p>
+    </div>
+
+    <h2>Our commitment to you</h2>
+    <p>At NdoaMatch, we want you to feel confident making a payment. Every report is personally generated using AI and delivered directly to your inbox. Because of the nature of digital content, our refund policy is as follows:</p>
+
+    <h2>When you are entitled to a full refund</h2>
+    <ul>
+      <li>Your report was <strong>not delivered</strong> to your email within 24 hours of a confirmed payment</li>
+      <li>You were <strong>charged more than once</strong> for the same submission</li>
+      <li>There was a <strong>technical error</strong> on our side that prevented your report from being generated</li>
+    </ul>
+
+    <h2>When we do not offer refunds</h2>
+    <ul>
+      <li>Your report was successfully delivered to the email address you provided</li>
+      <li>You are unhappy with the content of your report (we encourage you to contact us — we will do our best to help)</li>
+      <li>You provided an incorrect email address and the report was sent there</li>
+      <li>You changed your mind after the report was delivered</li>
+    </ul>
+
+    <h2>How to request a refund</h2>
+    <p>Email us at <a href="mailto:support@ndoamatch.co.ke">support@ndoamatch.co.ke</a> with:</p>
+    <ol>
+      <li>Your full name</li>
+      <li>The email address you used for the quiz</li>
+      <li>Your Paystack payment reference number (found in your payment confirmation)</li>
+      <li>A brief description of the issue</li>
+    </ol>
+    <p>We will respond within <strong>2 business days</strong>. Approved refunds are processed within <strong>5–7 business days</strong> back to your original payment method.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about a refund? Reach us at <a href="mailto:support@ndoamatch.co.ke">support@ndoamatch.co.ke</a></p>
+  </div>
+
+  <!-- ── FAQs ── -->
+  <div class="page-section" id="tab-faq">
+    <h1>Frequently Asked Questions</h1>
+    <p class="page-date">Everything you need to know about NdoaMatch</p>
+
+    <div style="margin-top: 2rem;">
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What is NdoaMatch? <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">NdoaMatch is a personality quiz that uses relationship psychology and AI to help you understand the profile of the person you are most compatible with for marriage. After answering 15 honest questions, you receive a personalised report that describes your ideal partner, where to find them in Kenya, and how to attract them.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How much does it cost? <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">The quiz and personalised report costs <strong>KES 250</strong> — a one-time payment. You pay after completing all 15 questions, before your report is generated.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How do I pay? <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">We accept <strong>Mpesa, Visa, and Mastercard</strong> through Paystack — one of Kenya's most trusted payment platforms. Your payment is fully secured and encrypted. We do not store your card or Mpesa details.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How long does it take to receive my report? <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">Your report is generated immediately after payment and typically arrives in your inbox within <strong>5–15 minutes</strong>. Occasionally it may take up to 30 minutes. Please check your spam or junk folder if you don't see it. If it hasn't arrived after 1 hour, email us at support@ndoamatch.co.ke with your payment reference.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is my information private? <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">Yes. Your quiz answers and personal details are used solely to generate your personalised report. We do not sell your data to third parties. Your responses are stored securely and are never shared publicly. See our Privacy Policy for full details.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What is the faith track? Why does it ask about religion? <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">Faith is a deeply important factor in Kenyan relationships and marriage. NdoaMatch offers four faith tracks — from deeply religious to secular — so your report reflects your actual worldview, not a generic one. Your answers shape the tone, language, and recommendations in your report. There are no wrong answers.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Can I take the quiz more than once? <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">Yes. Each quiz submission generates a unique report based on your answers at that time. Some people take it more than once after significant life changes. Each submission requires a separate KES 250 payment.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is this a matchmaking service? Will you find me a partner? <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">No — NdoaMatch is not a dating app or matchmaking agency. We do not connect you with other people directly. We give you a personalised profile of the type of person you are compatible with, and practical guidance on where to find them and how to approach the search. The rest is up to you.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How accurate is the report? <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">The report is grounded in established relationship psychology frameworks including attachment theory, love languages, and values-based compatibility research — adapted for the Kenyan context. The more honest your answers, the more accurate and useful your report will be. It is a guide, not a guarantee — relationships are complex and your personal judgement always matters.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What if I'm not happy with my report? <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">Contact us at support@ndoamatch.co.ke and tell us what felt off or unhelpful. We will do our best to assist. Please note that we do not offer refunds simply because the report contained honest feedback that felt uncomfortable — that is intentional. See our Refund Policy for full details on when refunds apply.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          I didn't receive my report. What do I do? <span class="faq-chevron">›</span>
+        </button>
+        <div class="faq-a">First, check your spam or junk folder — most missing reports are found there. If it's still not there after 1 hour, email us at <strong>support@ndoamatch.co.ke</strong> with your name, email address, and Paystack payment reference number. We will resend your report within 24 hours.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── PRIVACY POLICY ── -->
+  <div class="page-section" id="tab-privacy">
+    <h1>Privacy Policy</h1>
+    <p class="page-date">Last updated: March 2026</p>
+
+    <div class="highlight-box">
+      <p>NdoaMatch is committed to protecting your privacy. We collect only what we need to deliver your report, and we never sell your personal information.</p>
+    </div>
+
+    <h2>1. Who we are</h2>
+    <p>NdoaMatch is operated by <strong>IPWORTH LTD</strong>, registered in Kenya. This Privacy Policy explains how we collect, use, and protect your personal information when you use our quiz and report service.</p>
+    <p>Contact: <a href="mailto:support@ndoamatch.co.ke">support@ndoamatch.co.ke</a></p>
+
+    <h2>2. What information we collect</h2>
+    <p>When you use NdoaMatch, we collect:</p>
+    <ul>
+      <li><strong>Your first name</strong> — to personalise your report</li>
+      <li><strong>Your email address</strong> — to deliver your report</li>
+      <li><strong>Your city or county</strong> — to provide location-specific recommendations in your report</li>
+      <li><strong>Your quiz answers</strong> — 15 responses used to generate your personalised report</li>
+      <li><strong>Payment reference</strong> — to confirm your payment was successful (we do not store card or Mpesa details — those are handled entirely by Paystack)</li>
+      <li><strong>Date and time of submission</strong> — for our records</li>
+    </ul>
+
+    <h2>3. How we use your information</h2>
+    <p>We use your information solely to:</p>
+    <ul>
+      <li>Generate your personalised NdoaMatch report</li>
+      <li>Deliver that report to your email address</li>
+      <li>Respond to support requests</li>
+      <li>Improve the quiz and report quality over time (using anonymised, aggregated data only)</li>
+    </ul>
+    <p>We do <strong>not</strong> use your information for advertising, and we do not sell or share it with third parties for marketing purposes.</p>
+
+    <h2>4. Who we share your data with</h2>
+    <p>To operate the service, your data passes through these trusted third-party tools:</p>
+    <ul>
+      <li><strong>Paystack</strong> — processes your payment securely</li>
+      <li><strong>Zapier</strong> — automates the connection between your submission and report generation</li>
+      <li><strong>Anthropic</strong> — the AI provider that generates your report from your answers</li>
+      <li><strong>Airtable</strong> — stores your submission for our records</li>
+      <li><strong>Google (Gmail)</strong> — delivers your report to your inbox</li>
+    </ul>
+    <p>Each of these providers has their own privacy policy and handles data securely under their respective terms.</p>
+
+    <h2>5. Data retention</h2>
+    <p>We retain your quiz answers and contact details for up to <strong>12 months</strong> from the date of submission, after which they are deleted. You may request earlier deletion at any time by emailing us.</p>
+
+    <h2>6. Your rights</h2>
+    <p>You have the right to:</p>
+    <ul>
+      <li>Request a copy of the personal data we hold about you</li>
+      <li>Request correction of inaccurate data</li>
+      <li>Request deletion of your data</li>
+      <li>Withdraw consent at any time (note: this does not affect data already processed)</li>
+    </ul>
+    <p>To exercise any of these rights, email us at <a href="mailto:support@ndoamatch.co.ke">support@ndoamatch.co.ke</a></p>
+
+    <h2>7. Security</h2>
+    <p>We take reasonable technical measures to protect your information. Your quiz answers are transmitted securely and stored in access-controlled systems. We do not store payment card details — all payment processing is handled by Paystack.</p>
+
+    <h2>8. Cookies</h2>
+    <p>NdoaMatch does not use tracking cookies or advertising cookies. The quiz runs entirely in your browser without persistent tracking.</p>
+
+    <h2>9. Children</h2>
+    <p>NdoaMatch is intended for users aged 18 and above. We do not knowingly collect data from anyone under 18.</p>
+
+    <h2>10. Changes to this policy</h2>
+    <p>We may update this Privacy Policy from time to time. The date at the top of this page reflects the most recent update. Continued use of the service after changes constitutes acceptance.</p>
+
+    <h2>11. Contact us</h2>
+    <div class="contact-card">
+      <p><strong>IPWORTH LTD</strong></p>
+      <p>Email: <a href="mailto:support@ndoamatch.co.ke">support@ndoamatch.co.ke</a></p>
+      <p>Country: Kenya</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+</script>
+</body>
+</html>
